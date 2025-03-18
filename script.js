@@ -1,91 +1,55 @@
 let userscore = 0;
-let compuser = 0;
-
+let compscore = 0;
 
 const choices = document.querySelectorAll(".choice");
 let msg = document.querySelector("#msg");
-let userScore = document.querySelector("#userscore");
-let compuserScore = document.querySelector("#compscore");
+let userScorePara = document.querySelector("#userscore");
+let compScorePara = document.querySelector("#compscore");
 
-
- const showwinners = (winshow , userchoice , compchoice)=>{
-   
-    if(winshow){
-        userScore.innerText = ++userscore;
-        
-        msg.innerText = `you have win ${userchoice} beats ${compchoice} `;
-        msg.style.  backgroundColor = "green";
-      
-
-    }
-    else {
-        compuserScore.innerText = ++compuser;
-        msg.innerText = `you have Loss ${userchoice} beats ${compchoice} `;
+const showWinner = (userWins, userChoice, compChoice) => {
+    if (userWins) {
+        userScorePara.innerText = ++userscore;
+        msg.innerText = `You win! Your ${userChoice} beats ${compChoice}`;
+        msg.style.backgroundColor = "green";
+    } else {
+        compScorePara.innerText = ++compscore;
+        msg.innerText = `You lost! ${compChoice} beats your ${userChoice}`;
         msg.style.backgroundColor = "red";
-
     }
+};
 
-       
- }
-const drawgame = () =>{
+const drawGame = () => {
+    msg.innerText = "Game was a DRAW. Please try again!";
+    msg.style.backgroundColor = "black";
+};
 
-   msg.innerText = "Game was Please try again!";
-   msg.style.backgroundColor = "black";
+const genCompChoice = () => {
+    const options = ["rock", "paper", "scissors"];
+    const randomIndex = Math.floor(Math.random() * 3);
+    return options[randomIndex];
+};
 
-}
-const gencompchoice = () =>{
+const playGame = (userChoice) => {
+    const compChoice = genCompChoice();
 
-
-    let option = ["rocks", "paper", "scissors"];
-   let rndx =  Math.floor(Math.random()*3);
-   return option[rndx];
-
-}
-
-function playgame(userchoice){
-
-
-    // Generate computer choice //
-    let compchoice = gencompchoice();
-  
-    if(compchoice === userchoice) { 
-     drawgame();
-
+    if (compChoice === userChoice) {
+        drawGame();
+    } else {
+        let userWins = true;
+        if (userChoice === "rock") {
+            userWins = compChoice === "paper" ? false : true;
+        } else if (userChoice === "paper") {
+            userWins = compChoice === "scissors" ? false : true;
+        } else if (userChoice === "scissors") {
+            userWins = compChoice === "rock" ? false : true;
+        }
+        showWinner(userWins, userChoice, compChoice);
     }
-    else{
-        let winshow = true;
-
-        if(userchoice === "rocks"){
-
-        //    sciccors paper
-        winshow = compchoice === "paper" ? false : true;
-
-
-               
-        }
-        else if (userchoice === "paper"){
-
-            winshow = compchoice === "scissors" ? false : true;
-        }
-        else {
-
-            winshow = compchoice === "rocks" ? false : true;
-        }
-        showwinners(winshow , compchoice , userchoice)
-    }
-
-
-}
+};
 
 choices.forEach((choice) => {
-choice.addEventListener("click" ,() => {
-let userchoice = choice.getAttribute("id");
- 
- playgame(userchoice);
-
-
-  
-
-
-})
+    choice.addEventListener("click", () => {
+        const userChoice = choice.getAttribute("id");
+        playGame(userChoice);
+    });
 });
